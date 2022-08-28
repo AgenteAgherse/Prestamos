@@ -44,12 +44,13 @@ public class VentanaPrestamo extends javax.swing.JFrame {
         jButton1 = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
         jTable1 = new javax.swing.JTable();
+        totalIngresos = new javax.swing.JLabel();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
         jLabel1.setText("Capital Inicial:");
 
-        jLabel2.setText("Interés:");
+        jLabel2.setText("Interés (%):");
 
         jLabel3.setText("Días Préstamo:");
 
@@ -71,10 +72,16 @@ public class VentanaPrestamo extends javax.swing.JFrame {
         jTable1.setAutoResizeMode(javax.swing.JTable.AUTO_RESIZE_NEXT_COLUMN);
         jScrollPane1.setViewportView(jTable1);
 
+        totalIngresos.setText("Total Ingresos: ");
+
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(34, Short.MAX_VALUE)
+                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1117, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(27, 27, 27))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
@@ -93,9 +100,9 @@ public class VentanaPrestamo extends javax.swing.JFrame {
                         .addGap(30, 30, 30)
                         .addComponent(jButton1))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(33, 33, 33)
-                        .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 1117, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                .addContainerGap(28, Short.MAX_VALUE))
+                        .addGap(110, 110, 110)
+                        .addComponent(totalIngresos, javax.swing.GroupLayout.PREFERRED_SIZE, 832, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -109,9 +116,11 @@ public class VentanaPrestamo extends javax.swing.JFrame {
                     .addComponent(jLabel3)
                     .addComponent(diasPrestamo, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jButton1))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 28, Short.MAX_VALUE)
+                .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 405, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addContainerGap())
+                .addGap(18, 18, 18)
+                .addComponent(totalIngresos)
+                .addContainerGap(46, Short.MAX_VALUE))
         );
 
         pack();
@@ -152,6 +161,7 @@ public class VentanaPrestamo extends javax.swing.JFrame {
             }
         }
         addToTable();
+        totalIngresos();
     }//GEN-LAST:event_jButton1ActionPerformed
 
     /**
@@ -199,6 +209,7 @@ public class VentanaPrestamo extends javax.swing.JFrame {
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTable jTable1;
     private javax.swing.JTextField tasaInteres;
+    private javax.swing.JLabel totalIngresos;
     // End of variables declaration//GEN-END:variables
 
     private void addToTable() {
@@ -208,7 +219,7 @@ public class VentanaPrestamo extends javax.swing.JFrame {
             
             //Creamos una nueva fila para poner los datos.
             tabla.setRowCount(counter + 1);
-            
+            jTable1.setValueAt(prestamo.getCapitalInicial(), counter, 0);
             prestamoActual = prestamo.getCarritoPrestamo();
             for (NuevoPrestamo nuevoPrestamo : prestamoActual) {
                 jTable1.setValueAt(nuevoPrestamo.getValorPrestamo(), counter, nuevoPrestamo.getDiaPrestamo());
@@ -216,5 +227,38 @@ public class VentanaPrestamo extends javax.swing.JFrame {
             
             counter++;
         }
+        
+        Double totalDiario;
+        int filasFinales = 1;
+        tabla.setRowCount(counter + 1);
+        jTable1.setValueAt("TOTAL DÍA", counter, 0);
+        
+        for (int i = 1; i <= tabla.getColumnCount() / 2; i++) {
+            totalDiario = 0.0;
+            for (int j = 0; j < i; j++) {
+                totalDiario += (Double) jTable1.getValueAt(j, i);
+            }
+            jTable1.setValueAt(totalDiario, counter, i);
+        }
+        
+        
+        for (int i = (tabla.getColumnCount() / 2) + 1; i < tabla.getColumnCount(); i++) {
+            totalDiario = 0.0;
+            
+            for (int j = filasFinales; j < counter; j++) {
+                totalDiario += (Double) jTable1.getValueAt(j, i);
+            }
+            filasFinales++;
+            jTable1.setValueAt(totalDiario, counter, i);
+        }
+        
+    }
+    
+    private void totalIngresos() {
+        Double total = 0.0;
+        for (int i = 1; i < tabla.getColumnCount(); i++) {
+            total += (Double) jTable1.getValueAt(tabla.getRowCount() - 1, i);
+        }
+        this.totalIngresos.setText("Total Ingresos: " + total);
     }
 }

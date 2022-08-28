@@ -80,10 +80,8 @@ public class ArrayPrestamos {
     
     public void mostrarCuotas() {
         String mensaje = "";
-        System.out.println("Tamaño: " + carritoPrestamo.size());
         for (NuevoPrestamo nuevoPrestamo : carritoPrestamo) {
             mensaje += nuevoPrestamo.toString();
         }
-        System.out.println(mensaje);
     }
 }
